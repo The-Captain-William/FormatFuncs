@@ -26,13 +26,13 @@ def string_indenter(string, length=50, paragraph_size=0,space_size=1):
             while string[index_end_non_inclusive] != " ":
                 index_end_non_inclusive += 1
             if string[index_end_non_inclusive] == " ":
-                nth_snippet = string[index_start:index_end_non_inclusive + 1] + "\n"  # + 1 ] + n
+                nth_snippet = string[index_start:index_end_non_inclusive + 1] + "\n" 
             try:
                 if (turn + 1) % paragraph_size == 0:
                     space = True
             except ZeroDivisionError:
                 pass
-            if space == True and "\n" not in nth_snippet[0:-3]:
+            if space == True and "\n" not in nth_snippet[0:-1]:
                 nth_snippet += ("\n") * space_size
                 space = False
             composite_string += nth_snippet.lstrip()  # have to remove the + 1 counted in the above, chef's kiss  # lstrip()
