@@ -15,3 +15,6 @@ character specified by the length parameter.
 
 This works well for GUI applications where you may have issues
 where the text runs off the page. 
+
+## How to Install:
+`pip install formatfuncs-Captain-William`
