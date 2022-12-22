@@ -1,4 +1,4 @@
-#CAPTAIN WILLIAM'S FORMAT FUNC's
+# CAPTAIN WILLIAM'S FORMAT FUNC's
 
 This is a collection of functions used to format string files. 
 
