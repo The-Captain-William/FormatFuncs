@@ -18,7 +18,7 @@ def string_indenter(string, length=50, paragraph_size=0,space_size=1):
     index_end_non_inclusive = 0
     DEFINITE_END = string_length - 1
     rotate = True
-    space = True
+    space = False
     while rotate is True:
         for turn, rotation in enumerate(range(ratio)):
             index_start = index_end_non_inclusive
@@ -26,18 +26,39 @@ def string_indenter(string, length=50, paragraph_size=0,space_size=1):
             while string[index_end_non_inclusive] != " ":
                 index_end_non_inclusive += 1
             if string[index_end_non_inclusive] == " ":
-                nth_snippet = string[index_start:index_end_non_inclusive + 1] + "\n" 
+                nth_snippet = string[index_start:index_end_non_inclusive] # initialized nth_snippet
+                #print(f"snippet: #{nth_snippet}#")
             try:
                 if (turn + 1) % paragraph_size == 0:
                     space = True
             except ZeroDivisionError:
                 pass
-            if space == True and "\n" not in nth_snippet[0:-1]:
+            if space == True and "." in nth_snippet[0:-1]:  # if its time for a space
+                hold_this = ''
+                period_index = nth_snippet.find(".")
+                hold_this = nth_snippet[1:period_index + 1] + ("\n" * 2) + nth_snippet[period_index + 2:]
+                #print(f"Hold:#{hold_this}#")
+                nth_snippet = hold_this
                 nth_snippet += ("\n") * space_size
+                nth_snippet.lstrip()
+                #print(f"Hold2:#{hold_this}#")
+                composite_string += nth_snippet.lstrip()
                 space = False
-            composite_string += nth_snippet.lstrip()  # have to remove the + 1 counted in the above, chef's kiss  # lstrip()
-        #remainder = (DEFINITE_END - index_end_non_inclusive) 
+                
         nth_snippet = string[index_end_non_inclusive:DEFINITE_END + 1]
+        if paragraph_size == 0: # this is for the last part 
+            nth_snippet += "\n"
+            composite_string += nth_snippet.lstrip() # have to remove the + 1 counted in the above, chef's kiss  # lstrip()
+        elif paragraph_size > 0:
+            length_of_final = len(nth_snippet) // 2
+            while nth_snippet[length_of_final] != " ":
+                length_of_final -=1
+            if length_of_final == " ":
+                hold_this = nth_snippet[:length_of_final] + "\n" + nth_snippet[length_of_final:]  # split the last nth and add a breakline
+                nth_snippet = hold_this
+                composite_string += nth_snippet
+        #remainder = (DEFINITE_END - index_end_non_inclusive) 
+
         #print(f"nth snippet: {nth_snippet} index end: {index_end_non_inclusive} str length: {string_length}  def end: {DEFINITE_END}") # debug
         composite_string += nth_snippet.lstrip()
         rotate = False
@@ -110,5 +131,5 @@ if __name__ == "__main__":
 
     # bible_paragraph = paragraph_maker(bible_string, paragraph_size=3)
     # print(bible_paragraph)
-    bible_format = string_indenter(bible_string, paragraph_size=3)
+    bible_format = string_indenter(bible_string, paragraph_size=3, length=30)
     print(bible_format)
