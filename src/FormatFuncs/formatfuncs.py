@@ -59,7 +59,12 @@ def string_format(string, length=50, paragraph_size=0,space_size=1):
         while nth_snippet[length_of_final] != " ":
             length_of_final +=1
         if nth_snippet[length_of_final] == " ":
-            hold_this = nth_snippet[1:length_of_final + 1] + "\n" + nth_snippet[length_of_final + 1:]  # split the last nth and add a breakline
+            start = 0
+            if space == True:
+                start = 1
+            elif space == False:
+                start = 0
+            hold_this = nth_snippet[start:length_of_final + 1] + "\n" + nth_snippet[length_of_final + 1:]  # split the last nth and add a breakline
             #print(f" hold final #{hold_this}#")
             nth_snippet = hold_this
             composite_string += nth_snippet.lstrip()
@@ -111,3 +116,4 @@ def paragraph_maker(string, paragraph_size=3, space_size=1):
 
 
 
+print(string_format("Listen to rich people. It's that simple.", length=50))

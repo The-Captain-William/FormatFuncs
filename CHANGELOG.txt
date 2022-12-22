@@ -1,6 +1,11 @@
 Change Log 
 ==========
 
+0.1.0
+- Fixed string error with string_format
+cutting off the first character when paragraph is 
+set to zero. 
+
 0.0.9
 - Fixed init error
 
