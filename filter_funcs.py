@@ -26,19 +26,27 @@ def string_indenter(string, length=50, paragraph_size=0,space_size=1):
             while string[index_end_non_inclusive] != " ":
                 index_end_non_inclusive += 1
             if string[index_end_non_inclusive] == " ":
+<<<<<<< HEAD
                 nth_snippet = string[index_start:index_end_non_inclusive] # initialized nth_snippet
                 #print(f"snippet: #{nth_snippet}#")
+=======
+                nth_snippet = string[index_start:index_end_non_inclusive + 1] + "\n"  # + 1 ] + n
+>>>>>>> parent of 0223dba (unmodified copy before edit)
             try:
                 if (turn + 1) % paragraph_size == 0:
                     space = True
             except ZeroDivisionError:
                 pass
+<<<<<<< HEAD
             if space == True and "." in nth_snippet[0:-1]:  # if its time for a space
                 hold_this = ''
                 period_index = nth_snippet.find(".")
                 hold_this = nth_snippet[1:period_index + 1] + ("\n" * 2) + nth_snippet[period_index + 2:]
                 #print(f"Hold:#{hold_this}#")
                 nth_snippet = hold_this
+=======
+            if space == True and "\n" not in nth_snippet[0:-3]:
+>>>>>>> parent of 0223dba (unmodified copy before edit)
                 nth_snippet += ("\n") * space_size
                 nth_snippet.lstrip()
                 #print(f"Hold2:#{hold_this}#")
