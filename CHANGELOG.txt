@@ -1,6 +1,9 @@
 Change Log 
 ==========
 
+0.0.9
+- Fixed init error
+
 0.0.8 
 - First public release 12/22/2022
 
