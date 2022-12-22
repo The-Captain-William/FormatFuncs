@@ -60,9 +60,9 @@ def string_format(string, length=50, paragraph_size=0,space_size=1):
             length_of_final +=1
         if nth_snippet[length_of_final] == " ":
             start = 0
-            if space == True:
+            if start == "\n" or " ":
                 start = 1
-            elif space == False:
+            else:
                 start = 0
             hold_this = nth_snippet[start:length_of_final + 1] + "\n" + nth_snippet[length_of_final + 1:]  # split the last nth and add a breakline
             #print(f" hold final #{hold_this}#")
@@ -116,4 +116,5 @@ def paragraph_maker(string, paragraph_size=3, space_size=1):
 
 
 
-print(string_format("Listen to rich people. It's that simple.", length=50))
+#print(string_format("Listen to rich people. It's that simple.", length=50))
+print(string_format("Raw action solves everything. Caution breeds fear.", paragraph_size=1))
