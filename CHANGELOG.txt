@@ -1,5 +1,10 @@
 Change Log 
 ==========
+0.1.1
+- fixed out of range error for string_format (except for when strings are very small)
+- fixed string_format text formatting algorithm to make the resultant string more aesthetic
+- changed paragraph_maker to copy_write_maker
+- added push function for small strings 
 
 0.1.0
 - Fixed string error with string_format
