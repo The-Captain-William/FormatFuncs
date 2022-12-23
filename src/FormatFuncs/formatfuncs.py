@@ -1,7 +1,7 @@
 from math import floor
-from re import finditer
+from re import finditer, sub
 
-def string_format(string, length=50, paragraph_size=0,space_size=1):
+def string_format(string, length=40, paragraph_size=2,space_size=1, force_space=False):
     """
     About:
     Shapes a body of text to match within 80%+ of the
@@ -12,9 +12,11 @@ def string_format(string, length=50, paragraph_size=0,space_size=1):
     Also makes paragraphs that fit roughly within the specified length. 
     The function does not guarantee a paragraph after every nth sentance,
     but will try to approximate as best as possible.
+    If the length you want is too small to generate paragraphs, you can set force_space to True, 
+    which will force a new line at the end of every period.
     """
     string_length = len(string)
-    print(f"string length: {string_length}")
+    #print(f"string length: {string_length}")
     ratio = string_length // length
     index_jump = floor(0.8 * length) 
     composite_string = ''
@@ -24,26 +26,35 @@ def string_format(string, length=50, paragraph_size=0,space_size=1):
     DEFINITE_END = string_length - 1
     rotate = True
     space = False
-
+    collect_lengths = 0
+    collect_turns = 0
 
 
     while rotate is True:
         for turn, rotation in enumerate(range(ratio)):
             index_start = index_end_non_inclusive
             index_end_non_inclusive += index_jump
+            sample = 0
             while string[index_end_non_inclusive] != " ":
-                index_end_non_inclusive += 1
+                try:
+                    index_end_non_inclusive += 1
+                except IndexError:
+                    index_end_non_inclusive -= 1
+        
             if string[index_end_non_inclusive] == " ":
                 nth_snippet = string[index_start:index_end_non_inclusive] # initialized nth_snippet
-                #print(f"snippet: #{nth_snippet}#")
+                collect_lengths += len(nth_snippet)
+                collect_turns += 1
             try:
                 if (turn + 1) % paragraph_size == 0:
                     space = True
             except ZeroDivisionError:
-                pass
+                    space = False
             
             # PARAGRAPH MODE ON 
                 #check and see if paragraph mode is on and sentance is invalid
+                # what im doing is checking to see if there is a period in here. 
+                # if there is, just cleave off the point at the period.
 
             if space == True and "." in nth_snippet[0:-1]:  # if its time for a space, and there is a period inside the middle of the snippet
                 index_zero = nth_snippet[0]  # current nth_snippet character
@@ -53,30 +64,27 @@ def string_format(string, length=50, paragraph_size=0,space_size=1):
                 if index_zero != " " or "\n":  # include char
                     index_zero_value = 0
                 else:
-                    index_zero_value = 1  # skip char
-                hold_this = nth_snippet[index_zero_value:period_index + 1] + ("\n" * 2) + nth_snippet[period_index + 2:]
-                print(f"Hold:#{hold_this}#")
-                nth_snippet = hold_this
-                nth_snippet += ("\n") * space_size
-                nth_snippet.lstrip()
-                #print(f"Hold2:#{hold_this}#")
-                composite_string += nth_snippet.lstrip()
-                space = False
-            else:
+                    index_zero_value = 1  # skip char  ##
+                    # check length of rest
+                    # if rest <= len, crawl and add some more words
+                new_line = nth_snippet[period_index + 2:] 
+
+                hold_this = nth_snippet[index_zero_value:period_index + 1] + ("\n" * 2) + new_line + " " #...end[.] + linebreak + rest // 
+                sample += len(hold_this)
+                composite_string += hold_this.lstrip() 
+
+            else:  # if not paragraph, just slap it on
                 nth_snippet += "\n"
                 composite_string += nth_snippet.lstrip()
         
 
 
-
-
         # CONDITIONS FOR TAIL END #        
         nth_snippet = string[index_end_non_inclusive:DEFINITE_END + 1]  # end of string established
         start = 0
-        lenth_of_tail_end = len(nth_snippet)
-        if lenth_of_tail_end <= length:  # length + length * .2 ? 
-            pass
-        else:
+        lenth_of_tail_end = len(nth_snippet)  # if greater than length
+        if lenth_of_tail_end < length:  # less than length
+            #print(f"debug_end_ less than or equal to length #{nth_snippet}#")
             left_over = length - lenth_of_tail_end
             while nth_snippet[left_over] != " ":
                 try: 
@@ -86,14 +94,25 @@ def string_format(string, length=50, paragraph_size=0,space_size=1):
             if nth_snippet[left_over] == " ":
                 hold_this = nth_snippet[start:left_over + 1] + "\n" + nth_snippet[left_over + 1:]  # split the last nth and add a breakline
             nth_snippet = hold_this
-            #print(f" hold final #{hold_this}#")
-            #nth_snippet = hold_this
+        else:
+            #print(f"debug_end_ greater than length #{nth_snippet}#")    # greater than length
+            averages = collect_lengths//collect_turns  # will make the tail end fit the rest
+            left_over = lenth_of_tail_end - averages  # b/c leftover is larger than len, subtract ave
+            while nth_snippet[left_over] != " ":
+                try:
+                    left_over -= 1
+                except IndexError:
+                    left_over += 1
+            if nth_snippet[left_over] == " ":
+                hold_this = nth_snippet[start:left_over + 1] + "\n" + nth_snippet[left_over + 1:]  # split the last nth and add a breakline  # repeat but I can fix this another time
+            nth_snippet = hold_this   
 
-        #remainder = (DEFINITE_END - index_end_non_inclusive) 
-
-        #print(f"nth snippet: {nth_snippet} index end: {index_end_non_inclusive} str length: {string_length}  def end: {DEFINITE_END}") # debug
         composite_string += nth_snippet.lstrip()
         rotate = False
+        if force_space == True:
+            pattern = r"\."
+            find_period = sub(pattern, ".\n", composite_string)
+            composite_string = find_period
         return composite_string
     # TODO
     # the function has to account for spaces
@@ -113,16 +132,16 @@ def string_format(string, length=50, paragraph_size=0,space_size=1):
 #print(string_format("Listen to rich people. It's that simple.", length=50))
 
 
-print(string_format("If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways.", paragraph_size=2, length=40))
+#print(string_format("If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways.", paragraph_size=2, length=40))
 
-def paragraph_maker(string, paragraph_size=3, space_size=1):
+def copy_write_maker(string, paragraph_size=3, space_size=1):
     """
     Info:
     Will write "copyright" style where each sentance is its own line. 
     There is a linebreak after every line.
     
-    paragraph_size:
-    Will seperate paragraphs after every nth line from paragraph_size.
+    big_space_size:
+    This will attempt to seperate 
 
     space_size:
     Determines the size of the linebreaks and of the space. 
@@ -136,9 +155,12 @@ def paragraph_maker(string, paragraph_size=3, space_size=1):
     composite_string = ''
     for match_number, match in enumerate(matches):
         start = end
-        if (match_number + 1) % paragraph_size == 0:  # check if every nth line
-            split = True
-        else:
+        try:
+            if (match_number + 1) % paragraph_size == 0:  # check if every nth line
+                split = True
+            else:
+                split = False
+        except ZeroDivisionError:
             pass
         end = match.span()[1]   
         iter_string = string[start:end] # no need for +1 b/c  .span()[1] is already an overshoot of + 1
@@ -150,5 +172,35 @@ def paragraph_maker(string, paragraph_size=3, space_size=1):
         composite_string += iter_string
     return composite_string
 
+print("long ass sentance")
+print("--" * 10)
+long_ass_sentance = "If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways."
+print(long_ass_sentance)
+
+print("\n" * 5)
+p1 = copy_write_maker("If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways.", paragraph_size=1, space_size=0)
+# print(p1)
+print("\n" * 10)
+
+print("Paragraph Maker")
+print("--" * 10)
+p2 = string_format(p1, paragraph_size=1, length=20, space_size=1)
+print(p2)
+
+print("\n" * 10)
+print("Copy-Write Syle")
+print("--" * 10)
+p3 = copy_write_maker("If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways.", paragraph_size=1, space_size=1)
+print(p3)
 
 
+print("Length Formatted")
+print("--" * 10)
+p4 = string_format(long_ass_sentance, paragraph_size=1, space_size=1, length=20)
+print(p4)
+print("\n" * 10)
+
+print("Paragraph Style")
+print("--" * 10)
+p4 = string_format(long_ass_sentance, paragraph_size=1, length=12, space_size=1, force_space=True)
+print(p4)
