@@ -110,9 +110,11 @@ def string_format(string, length=40, paragraph_size=2,space_size=1, force_space=
         composite_string += nth_snippet.lstrip()
         rotate = False
         if force_space == True:
-            pattern = r"\."
+            pattern = r"\.\s?"
             find_period = sub(pattern, ".\n", composite_string)
-            composite_string = find_period
+            find_question = sub(r"\?\s?", "?\n", find_period)
+            find_exclaim = sub(r"!\s?", "!\n", find_question)
+            composite_string = find_exclaim
         return composite_string
     # TODO
     # the function has to account for spaces
@@ -172,35 +174,50 @@ def copy_write_maker(string, paragraph_size=3, space_size=1):
         composite_string += iter_string
     return composite_string
 
-print("long ass sentance")
-print("--" * 10)
-long_ass_sentance = "If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways."
-print(long_ass_sentance)
-
-print("\n" * 5)
-p1 = copy_write_maker("If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways.", paragraph_size=1, space_size=0)
-# print(p1)
-print("\n" * 10)
-
-print("Paragraph Maker")
-print("--" * 10)
-p2 = string_format(p1, paragraph_size=1, length=20, space_size=1)
-print(p2)
-
-print("\n" * 10)
-print("Copy-Write Syle")
-print("--" * 10)
-p3 = copy_write_maker("If you're visiting this page, you're likely here because you're searching for a random sentence. Sometimes a random word just isn't enough, and that is where the random sentence generator comes into play. By inputting the desired number, you can make a list of as many random sentences as you want or need. Producing random sentences can be helpful in a number of different ways.", paragraph_size=1, space_size=1)
-print(p3)
 
 
-print("Length Formatted")
-print("--" * 10)
-p4 = string_format(long_ass_sentance, paragraph_size=1, space_size=1, length=20)
-print(p4)
-print("\n" * 10)
+def push(string, length=25, force_space=False):
+    """
+    'push' is for when you want to make sure your text conforms without the possibility of an index error. 
+    Really helpful for when your incoming string data has huge variance or the strings are very small.
+    
+    force_space will force a double linebreak at the end of every ? ! or .
+    """
+    # find every single space
+    # count every single space
+    # after nth char look for space
+    # make that space a \n 
+    # after every period add \n\n
+    space = False
+    char_list = [char for char in string]
+    print(len(string))
+    for index, char in enumerate(char_list):  # ( i, c)
+        print(index, char)
+        if (index + 1) % length == 0:
+            space = True
+            print(space)
+        if space == True and char == " ":
+            char_list[index] = "\n"
+            space = False
+        if force_space == True:
+            if char == ".":
+                char_list.insert(index + 1, "\n" * 2)
+            elif char == "?":
+                char_list.insert(index + 1, "\n" * 2)
+            elif char == "!":
+                char_list.insert(index + 1, "\n" * 2)
+        else:
+            pass
+    if char_list[-1] == "\n\n":
+        char_list.pop()
+    new_string = "".join(char for char in char_list)
+    # print(char_list)
+    cleanup = sub(r"\s\n\n|\n\n\s", "\n\n", new_string) # get rid of space
+    new_string = cleanup
+    return new_string
+        
 
-print("Paragraph Style")
-print("--" * 10)
-p4 = string_format(long_ass_sentance, paragraph_size=1, length=12, space_size=1, force_space=True)
-print(p4)
+
+
+
+
