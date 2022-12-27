@@ -183,19 +183,21 @@ def push(string, length=25, force_space=False):
     
     force_space will force a double linebreak at the end of every ? ! or .
     """
-    # find every single space
-    # count every single space
-    # after nth char look for space
-    # make that space a \n 
-    # after every period add \n\n
+
+    # after nth char look for space - done
+    # make that space a \n  - done
+    # after every period add \n\n - done
+
+    # post-processing
+    # get all \n
+    # compare len of \n to \n
     space = False
     char_list = [char for char in string]
-    print(len(string))
+    #print(len(string))
     for index, char in enumerate(char_list):  # ( i, c)
-        print(index, char)
+        #print(index, char)
         if (index + 1) % length == 0:
             space = True
-            print(space)
         if space == True and char == " ":
             char_list[index] = "\n"
             space = False
@@ -208,16 +210,97 @@ def push(string, length=25, force_space=False):
                 char_list.insert(index + 1, "\n" * 2)
         else:
             pass
-    if char_list[-1] == "\n\n":
-        char_list.pop()
+    for _ in range(2):
+        if char_list[-1] == "\n\n" or char_list[-1] == " " or char_list[-1] == "\n":
+            char_list.pop()
+    #print(char_list)
     new_string = "".join(char for char in char_list)
     # print(char_list)
-    cleanup = sub(r"\s\n\n|\n\n\s", "\n\n", new_string) # get rid of space
-    new_string = cleanup
+    cleanup_space = sub(r"\s\n\n|\n\n\s", "\n\n", new_string) # get rid of space
+    new_string = cleanup_space
     return new_string
+
+# TODO
+# make a function that takes a long string and makes a dict or list of lists, each list containing a sentance. 
+# each list is a segment, of a given length L
+# append each list with \n
+# compile entire list
+# go through every character and wherever there is a ! ? . insert at index + 1 a \n\n if the ! ? . % P == 0: 
+
+# def paragraph_maker(string, length=50, paragraph_length=5, space_size=1):
+#     list_of_sentances = []
+#     list_of_chars = []
+#     char_all = [char for char in string]
+#     initial = 0
+#     final = 0
+#     space = False
+#     final_sent = ''
+#     for index, char in enumerate(string):
+#         if char == r"." or char == r"?" or char == "!":
+#             #print(char)
+#             final = index
+#             list_of_sentances.append([string[initial:final + 1]])
+#             initial = final + 1  # account for period inclusive, and space
+    
+#     for index, sentance in enumerate(list_of_sentances):
+#         if index + 1 >= paragraph_length and index % paragraph_length == 0:
+#             sentance.append("\n\n")
+    
+#     for sentance in list_of_sentances:
+#         if len(sentance) > 1:
+#             if sentance[1] == "\n":
+#                 if sentance[0][0] == " ":
+#                     sentance[0] = sentance[0][1:]
+
+#     # for sentance in list_of_sentances:
+#     #     start = 0
+#     #     end = 0
+#     #     for internal_string in sentance:
+#     #         for index, char in enumerate(internal_string):
+#     #             compiled = ''
+#     #             if index > length:
+#     #                 if index % length == 0:
+#     #                     space = True
+#     #                 if space == True and char == " ":
+#     #                     start = end
+#     #                     end = index
+#     #                     compiled = internal_string[start:index + 1] + "\n" + internal_string[index + 1:]
+#     #                     sentance[0] = compiled
+#     #                     space = False
+#     #                     break                    
+
+#     final_string_1 = ''
+#     final_string_2 = ''        
+#     for sentance in list_of_sentances:
+#         for internal_string in sentance:
+#             final_string_1 += internal_string
+    
+#     space = False
+#     list_again = [char for char in final_string_1]
+    
+#     for index, char in enumerate(list_again):
+#         if index > length and index % length == 0:
+#             space = True
+#         if space == True and char == " ":
+#             list_again[index] = "\n"
+#             space = False
+    
+#     for char in list_again:
+#         final_string_2 += char
+        
+    
+    
         
 
+#     #print(final_string_1)
+#     print(final_string_2)
 
+    
+
+
+# test = "Only absolute losers 'suffer' with the inability to strive to become something. Here is another string test. Another sentance! And Another One. Skooby Doobie."
+
+# paragraph_maker(test, paragraph_length=5, length=35)
 
 
 
