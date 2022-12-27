@@ -1,5 +1,9 @@
 Change Log 
 ==========
+0.1.2
+- minor improvements
+- minor bugfixes where information used for debugging would print to console 
+
 0.1.1
 - fixed out of range error for string_format (except for when strings are very small)
 - fixed string_format text formatting algorithm to make the resultant string more aesthetic
